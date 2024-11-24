@@ -8,19 +8,20 @@ import SelectInput from "@/Components/SelectInput";
 import { PROJECT_STATUS_TEXT_MAP } from "@/constants";
 import PrimaryButton from "@/Components/PrimaryButton";
 
-export default function Create({ auth }) {
+export default function Edit({ auth, project }) {
   const { data, setData, post, errors, reset } = useForm({
     image: "",
-    name: "",
-    status: "",
-    description: "",
-    due_date: "",
+    name: project.name || "",
+    status: project.status || "",
+    description: project.description || "",
+    due_date: project.due_date || "",
+    _method: "PUT",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route("project.store"));
+    post(route("project.update", project));
   };
 
   return (
@@ -28,11 +29,11 @@ export default function Create({ auth }) {
       user={auth.user}
       header={
         <h2 className="text-xl font-semibold leading-tight text-white">
-          Create New Project
+          Edit Project "{project.name}"
         </h2>
       }
     >
-      <Head title="Create Project" />
+      <Head title="Edit Project" />
 
       <div className="py-12">
         <div className="w-full mx-auto sm:px-6 lg:px-8">
@@ -41,6 +42,15 @@ export default function Create({ auth }) {
               onSubmit={onSubmit}
               className="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg"
             >
+              {project.image_path && (
+                <div className="flex items-center justify-center mb-4">
+                  <img
+                    src={project.image_path}
+                    alt="Project Image"
+                    className="w-64 h-64 rounded-md"
+                  />
+                </div>
+              )}
               {/* Project Image */}
               <div>
                 <InputLabel
@@ -98,7 +108,7 @@ export default function Create({ auth }) {
                   type="date"
                   name="due_date"
                   className="block w-full mt-1"
-                  value={data.due_date}
+                  value={data.due_date ? new Date(data.due_date).toISOString().split('T')[0] : ''}
                   onChange={(e) => setData("due_date", e.target.value)}
                 />
                 <InputError message={errors.due_date} className="mt-2" />
@@ -118,7 +128,9 @@ export default function Create({ auth }) {
                   <option value="">Please select a status</option>
                   {Object.entries(PROJECT_STATUS_TEXT_MAP).map(
                     ([key, value]) => (
-                      <option value={key}>{value}</option>
+                      <option key={key} value={key}>
+                        {value}
+                      </option>
                     )
                   )}
                 </SelectInput>
@@ -137,7 +149,7 @@ export default function Create({ auth }) {
                   type="submit"
                   className="!bg-green-500 !text-white hover:!bg-green-600 !transition-colors !duration-150 !ease-in-out"
                 >
-                  Create
+                  Update
                 </PrimaryButton>
               </div>
             </form>

@@ -12,7 +12,7 @@ class Project extends Model
     /** @use HasFactory<\Database\Factories\ProjectFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['name', 'image_path', 'description', 'due_date', 'status', 'created_by', 'updated_by'];
 
     public function tasks(): HasMany
     {

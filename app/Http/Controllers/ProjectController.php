@@ -7,6 +7,8 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -17,8 +19,8 @@ class ProjectController extends Controller
     {
         $projects = Project::query();
 
-        $sortField = request('sort_field', 'id');
-        $sortDirection = request('sort_direction', 'asc');
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
 
         if (request('name')) {
             $projects->where('name', 'like', '%' . request('name') . '%');
@@ -33,6 +35,7 @@ class ProjectController extends Controller
         return inertia('Project/Index', [
             'projects' => ProjectResource::collection($projects),
             'queryParams' => request()->query() ?: null,
+            'success' => session('success') ?: null,
         ]);
     }
 
@@ -49,7 +52,18 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $data = $request->validated();
+        $image = $data['image'] ?? null;
+        $data['created_by'] = auth()->id();
+        $data['updated_by'] = auth()->id();
+
+        if ($image) {
+            $data['image_path'] = $image->store('project/' . Str::random(10), 'public');
+        }
+
+        $project = Project::create($data);
+
+        return redirect()->route('project.index')->with('success', 'Project created successfully');
     }
 
     /**
@@ -57,7 +71,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $tasks = $project->tasks()->paginate(10);
+        $tasks = $project->tasks();
 
         $sortField = request('sort_field', 'id');
         $sortDirection = request('sort_direction', 'asc');
@@ -84,7 +98,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return inertia('Project/Edit', [
+            'project' => new ProjectResource($project),
+        ]);
     }
 
     /**
@@ -92,7 +108,21 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $data = $request->validated();
+
+        $image = $data['image'] ?? null;
+        $data['updated_by'] = auth()->id();
+
+        if ($image) {
+            if ($project->image_path) {
+                Storage::delete($project->image_path) && Storage::deleteDirectory(dirname($project->image_path));
+            }
+            $data['image_path'] = $image->store('project/' . Str::random(10), 'public');
+        }
+
+        $project->update($data);
+
+        return redirect()->route('project.index')->with('success', 'Project updated successfully');
     }
 
     /**
@@ -100,6 +130,15 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $name = $project->name;
+
+        $project->delete();
+        if ($project->image_path) {
+            Storage::delete('public/' . $project->image_path);
+        }
+
+        $project->tasks()->delete();
+
+        return redirect()->route('project.index')->with('success', "Project \"$name\" deleted successfully");
     }
 }
