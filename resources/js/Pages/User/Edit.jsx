@@ -11,8 +11,10 @@ export default function Edit({ auth, user }) {
   const { data, setData, post, errors, reset } = useForm({
     name: user.name || "",
     email: user.email || "",
+    image: "",
     password: "",
     password_confirmation: "",
+    status: user.status || "active",
     _method: "PUT",
   });
 
@@ -40,6 +42,29 @@ export default function Edit({ auth, user }) {
               onSubmit={onSubmit}
               className="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg"
             >
+              {user.image && (
+                <div className="flex items-center justify-center mb-4">
+                  <img
+                    src={user.image}
+                    alt="User Image"
+                    className="w-64 h-64 rounded-md"
+                  />
+                </div>
+              )}
+
+              {/* User Image */}
+              <div>
+                <InputLabel htmlFor="user_image" value="User Image" />
+
+                <TextInput
+                  id="user_image"
+                  type="file"
+                  name="image"
+                  className="block w-full mt-1"
+                  onChange={(e) => setData("image", e.target.files[0])}
+                />
+                <InputError message={errors.image} className="mt-2" />
+              </div>
               {/* User Name */}
               <div className="mt-4">
                 <InputLabel htmlFor="user_name" value="User Name" />

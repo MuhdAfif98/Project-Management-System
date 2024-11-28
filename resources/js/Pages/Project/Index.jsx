@@ -75,7 +75,7 @@ export default function Index({
     >
       <Head title="Projects" />
 
-      <div className="w-full mx-auto sm:px-6 lg:px-8">
+      <div className="w-full mx-auto mt-4 sm:px-6 lg:px-8">
         {success && (
           <div
             className="px-4 py-2 mx-auto my-2 text-white rounded bg-emerald-500"

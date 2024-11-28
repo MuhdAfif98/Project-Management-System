@@ -73,7 +73,7 @@ export default function Index({
     >
       <Head title="Users" />
 
-      <div className="w-full mx-auto sm:px-6 lg:px-8">
+      <div className="w-full mx-auto mt-4 sm:px-6 lg:px-8">
         {success && (
           <div
             className="px-4 py-2 mx-auto my-2 text-white rounded bg-emerald-500"
@@ -96,6 +96,9 @@ export default function Index({
                   >
                     ID
                   </TableHeading>
+
+                  {/* User Image */}
+                  <TableHeading sortable={false}>Image</TableHeading>
 
                   {/* User Name */}
                   <TableHeading
@@ -138,6 +141,7 @@ export default function Index({
                 <tr className="text-nowrap">
                   <th scope="col" className="px-6 py-3"></th>
 
+                  <th scope="col" className="px-6 py-3"></th>
                   {/* Search by Name */}
                   <th scope="col" className="px-6 py-3">
                     <TextInput
@@ -169,6 +173,7 @@ export default function Index({
                   <th scope="col" className="px-6 py-3"></th>
                 </tr>
               </thead>
+
               <tbody>
                 {users.data.map((user, index) => (
                   <tr
@@ -178,9 +183,20 @@ export default function Index({
                     {/* User ID */}
                     <td className="px-3 py-3">{index + 1}</td>
 
+                    {/* User Image */}
+                    <td className="px-3 py-3">
+                      <img
+                        src={user.image}
+                        alt={`${user.name} avatar`}
+                        className="w-10 h-10 rounded-full justify-self-center"
+                      />
+                    </td>
+
                     {/* User Name */}
-                    <th className="px-3 py-3 text-white text-nowrap">
-                      {user.name}
+                    <th className="px-3 py-3 text-white text-nowrap hover:underline">
+                      <Link href={route("user.show", user.id)}>
+                        {user.name}
+                      </Link>
                     </th>
 
                     {/* User Email */}

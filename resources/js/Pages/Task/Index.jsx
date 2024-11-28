@@ -27,7 +27,7 @@ export default function Index({
     >
       <Head title="Tasks" />
 
-      <div className="w-full mx-auto sm:px-6 lg:px-8">
+      <div className="w-full mx-auto mt-4 sm:px-6 lg:px-8">
         <TasksTable
           tasks={tasks}
           queryParams={queryParams}

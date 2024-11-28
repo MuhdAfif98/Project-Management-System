@@ -8,9 +8,10 @@ import SelectInput from "@/Components/SelectInput";
 import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function Create({ auth }) {
-  const { data, setData, post , errors, reset } = useForm({
+  const { data, setData, post, errors, reset } = useForm({
     name: "",
     email: "",
+    image: "",
     password: "",
     password_confirmation: "",
   });
@@ -39,6 +40,20 @@ export default function Create({ auth }) {
               onSubmit={onSubmit}
               className="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg"
             >
+              {/* User Image */}
+              <div>
+                <InputLabel htmlFor="user_image" value="User Image" />
+
+                <TextInput
+                  id="user_image"
+                  type="file"
+                  name="image"
+                  className="block w-full mt-1"
+                  onChange={(e) => setData("image", e.target.files[0])}
+                />
+                <InputError message={errors.image} className="mt-2" />
+              </div>
+
               {/* User Name */}
               <div className="mt-4">
                 <InputLabel htmlFor="user_name" value="User Name" />

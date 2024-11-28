@@ -25,7 +25,7 @@ class ProjectResource extends JsonResource
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d'),
             'status' => $this->status,
-            'image_path' => $this->image_path ? Storage::url($this->image_path) : '',
+            'image_path' => $this->image_path ? Storage::url($this->image_path) : 'https://api.dicebear.com/9.x/pixel-art/svg?seed=' . $this->id,
             'createdBy' => new UserResource($this->createdBy),
             'updatedBy' => new UserResource($this->updatedBy),
         ];

@@ -26,7 +26,7 @@ class TaskResource extends JsonResource
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d'),
             'status' => $this->status,
             'priority' => $this->priority,
-            'image_path' => $this->image_path ? Storage::url($this->image_path) : null,
+            'image_path' => $this->image_path ? Storage::url($this->image_path) : 'https://api.dicebear.com/9.x/pixel-art/svg?seed=' . $this->id,
             'assignedUser' => $this->assigned_user_id ? new UserResource($this->assignedUser) : null,
             'project' => new ProjectResource($this->project),
             'createdBy' => new UserResource($this->createdBy),

@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -50,8 +52,14 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
+        $image = $data['image'] ?? null;
         $data['email_verified_at'] = now();
         $data['password'] = bcrypt($data['password']);
+
+        if ($image) {
+            $data['image'] = $image->store('user/' . Str::random(10), 'public');
+        }
+
         User::create($data);
 
         return redirect()->route('user.index')->with('success', 'User created successfully');
@@ -63,7 +71,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         return inertia('User/Show', [
-            'user' => $user
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -84,10 +92,18 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
+        $image = $data['image'] ?? null;
         if (isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         } else {
             unset($data['password']);
+        }
+
+        if ($image) {
+            if ($user->image) {
+                Storage::deleteDirectory(dirname($user->image));
+            }
+            $data['image'] = $image->store('user/' . Str::random(10), 'public');
         }
 
         $user->update($data);

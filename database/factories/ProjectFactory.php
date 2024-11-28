@@ -22,7 +22,7 @@ class ProjectFactory extends Factory
             'description' => fake()->realText(),
             'due_date' => fake()->dateTimeBetween('now', '+1 month'),
             'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),
-            'image_path' => fake()->imageUrl(),
+            'image_path' => null,
             'created_by' => 1,
             'updated_by' => 1,
         ];
