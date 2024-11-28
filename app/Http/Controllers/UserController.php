@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -13,7 +14,26 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::query();
+
+        $sortField = request('sort_field', 'id');
+        $sortDirection = request('sort_direction', 'asc');
+
+        if (request('name')) {
+            $users->where('name', 'like', '%' . request('name') . '%');
+        }
+
+        if (request('email')) {
+            $users->where('email', 'like', '%' . request('email') . '%');
+        }
+
+        $users = $users->orderBy($sortField, $sortDirection)->paginate(10);
+
+        return inertia('User/Index', [
+            'users' => UserResource::collection($users),
+            'queryParams' => request()->query() ?: null,
+            'success' => session('success') ?: null,
+        ]);
     }
 
     /**
@@ -21,7 +41,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('User/Create');
     }
 
     /**
@@ -29,7 +49,12 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['email_verified_at'] = now();
+        $data['password'] = bcrypt($data['password']);
+        User::create($data);
+
+        return redirect()->route('user.index')->with('success', 'User created successfully');
     }
 
     /**
@@ -37,7 +62,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return inertia('User/Show', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -45,7 +72,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return inertia('User/Edit', [
+            'user' => new UserResource($user)
+        ]);
     }
 
     /**
@@ -53,7 +82,17 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+
+        if (isset($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('user.index')->with('success', 'User updated successfully');
     }
 
     /**
@@ -61,6 +100,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $name = $user->name;
+
+        $user->delete();
+
+        return redirect()->route('user.index')->with('success', "User \"$name\" deleted successfully");
     }
 }

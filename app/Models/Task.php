@@ -11,7 +11,18 @@ class Task extends Model
     /** @use HasFactory<\Database\Factories\TaskFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'image_path', 'description', 'due_date', 'status', 'created_by', 'updated_by'];
+    protected $fillable = [
+        'name',
+        'description',
+        'image_path',
+        'status',
+        'priority',
+        'due_date',
+        'assigned_user_id',
+        'created_by',
+        'updated_by',
+        'project_id',
+    ];
 
     public function assignedUser(): BelongsTo
     {

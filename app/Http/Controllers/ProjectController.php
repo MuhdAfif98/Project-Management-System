@@ -61,7 +61,7 @@ class ProjectController extends Controller
             $data['image_path'] = $image->store('project/' . Str::random(10), 'public');
         }
 
-        $project = Project::create($data);
+        Project::create($data);
 
         return redirect()->route('project.index')->with('success', 'Project created successfully');
     }
@@ -115,7 +115,7 @@ class ProjectController extends Controller
 
         if ($image) {
             if ($project->image_path) {
-                Storage::delete($project->image_path) && Storage::deleteDirectory(dirname($project->image_path));
+                Storage::deleteDirectory(dirname($project->image_path));
             }
             $data['image_path'] = $image->store('project/' . Str::random(10), 'public');
         }
@@ -134,7 +134,7 @@ class ProjectController extends Controller
 
         $project->delete();
         if ($project->image_path) {
-            Storage::delete('public/' . $project->image_path);
+            Storage::deleteDirectory(dirname($project->image_path));
         }
 
         $project->tasks()->delete();
