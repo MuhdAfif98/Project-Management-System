@@ -95,9 +95,10 @@ npm run dev
 php artisan serve
 ```
 
-
+## 🎨 Screenshots
  
-
+### Dashboard
+![dashboard](/workspaces/Project-Management-System/images/dashboard.png)
 
 ## 🛠️ Usage
 
