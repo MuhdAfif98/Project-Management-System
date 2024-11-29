@@ -98,7 +98,7 @@ php artisan serve
 ## 🎨 Screenshots
  
 ### Dashboard
-![dashboard](/workspaces/Project-Management-System/images/dashboard.png)
+![dashboard](images/dashboard.png)
 
 ## 🛠️ Usage
 
