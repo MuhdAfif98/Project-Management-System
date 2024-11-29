@@ -101,10 +101,10 @@ php artisan serve
 ![dashboard](images/dashboard.png)
 
 ### Project list
-![dashboard](images/project list.png)
+![dashboard](images/project_list.png)
 
 ### Project details
-![dashboard](images/project detail.png)
+![dashboard](images/project_detail.png)
 
 
 ## 🛠️ Usage
