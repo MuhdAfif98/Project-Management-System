@@ -100,6 +100,13 @@ php artisan serve
 ### Dashboard
 ![dashboard](images/dashboard.png)
 
+### Project list
+![dashboard](images/project list.png)
+
+### Project details
+![dashboard](images/project detail.png)
+
+
 ## 🛠️ Usage
 
 - Visit http://localhost to start using the system.
